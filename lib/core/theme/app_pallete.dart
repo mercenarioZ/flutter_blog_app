@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// this class defines all the colors used in the entire app, it helps to control every aspect of the app's color scheme from one place
 class AppPallete {
   static const Color backgroundColor = Color.fromRGBO(24, 24, 32, 1);
   static const Color gradient1 = Color.fromRGBO(187, 63, 221, 1);

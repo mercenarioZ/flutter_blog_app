@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/theme/app_pallete.dart';
-import 'package:flutter_app/features/auth/presentation/pages/login_page.dart';
+import 'package:flutter_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:flutter_app/features/auth/presentation/widgets/auth_field.dart';
 import 'package:flutter_app/features/auth/presentation/widgets/auth_gradient_button.dart';
 
-class SignUpPage extends StatefulWidget {
-  static route() => MaterialPageRoute(builder: (context) => const SignUpPage());
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  static route() => MaterialPageRoute(builder: (context) => const LoginPage());
+  const LoginPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   // controller for email input, this can be used to retrieve the email input value
-  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -25,7 +24,6 @@ class _SignUpPageState extends State<SignUpPage> {
   // dispose the controllers when the widget is removed from the widget tree -> avoid memory leaks
   @override
   void dispose() {
-    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
@@ -42,18 +40,15 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Sign up", style: TextStyle(fontSize: 48)),
+              const Text("Log in", style: TextStyle(fontSize: 48)),
               const Text(
-                "Create a new account here",
+                "Welcome back, please log in",
                 style: TextStyle(fontSize: 20),
               ),
 
               const SizedBox(height: 30),
 
               // Form fields can be added here
-              AuthField(hintText: "Name", controller: nameController),
-              const SizedBox(height: 15),
-
               AuthField(hintText: "Email", controller: emailController),
               const SizedBox(height: 15),
 
@@ -62,21 +57,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: passwordController,
                 obscureText: true,
               ),
-              const SizedBox(height: 15),
-
-              AuthField(
-                hintText: "Confirm your password",
-                controller: confirmPasswordController,
-                obscureText: true,
-              ),
               const SizedBox(height: 30),
 
+              // Gradient Login button
               AuthGradientButton(
-                buttonText: "Sign Up",
+                buttonText: "Sign in",
                 onPressed: () {
                   // display a message (example)
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Sign Up button pressed!")),
+                    SnackBar(content: Text("Sign in button pressed!")),
                   );
                 },
               ),
@@ -86,16 +75,17 @@ class _SignUpPageState extends State<SignUpPage> {
 
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, LoginPage.route());
+                  // navigate to sign up
+                  Navigator.push(context, SignUpPage.route());
                 },
                 child: RichText(
                   text: TextSpan(
-                    text: "Already have an account? ",
+                    text: 'Don\'t have an account? ',
                     style: Theme.of(context).textTheme.titleMedium,
 
                     children: [
                       TextSpan(
-                        text: 'Sign in',
+                        text: 'Sign up',
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
                               color: AppPallete.gradient3,
