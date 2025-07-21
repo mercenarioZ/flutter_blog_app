@@ -38,7 +38,7 @@ class SupabaseDataSourceImpl implements SupabaseDataSource {
       if (response.user == null) {
         throw ServerException('User is null!');
       }
-      return response.user!.id;
+      return response.user!.id; // Return user ID on successful sign up
     } catch (e) {
       throw ServerException(e.toString());
     }
@@ -50,7 +50,7 @@ class SupabaseDataSourceImpl implements SupabaseDataSource {
     required String password,
   }) {
     // Logic to sign in with Supabase
-    // TODO: Implement this method
+    // Todo: Implement this method
     throw UnimplementedError('signInWithEmailAndPassword is not implemented yet');
   }
 }

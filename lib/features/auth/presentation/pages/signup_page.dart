@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/theme/app_pallete.dart';
+import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_app/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_app/features/auth/presentation/widgets/auth_field.dart';
 import 'package:flutter_app/features/auth/presentation/widgets/auth_gradient_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignUpPage extends StatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => const SignUpPage());
@@ -74,10 +76,16 @@ class _SignUpPageState extends State<SignUpPage> {
               AuthGradientButton(
                 buttonText: "Sign Up",
                 onPressed: () {
-                  // display a message (example)
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Sign Up button pressed!")),
-                  );
+                  if (_formKey.currentState!.validate()) {
+                    context.read<AuthBloc>().add(
+                      AuthSignUpEvent(
+                        name: nameController.text.trim(),
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                        confirmPassword: confirmPasswordController.text.trim(),
+                      ),
+                    );
+                  }
                 },
               ),
 
