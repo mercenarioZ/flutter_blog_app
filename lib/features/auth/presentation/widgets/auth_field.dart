@@ -4,12 +4,14 @@ class AuthField extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller;
   final bool obscureText;
+  final String? Function(String?)? extraValidator;
 
   const AuthField({
     super.key,
     required this.hintText,
     this.controller,
     this.obscureText = false,
+    this.extraValidator,
   });
 
   @override
@@ -17,11 +19,18 @@ class AuthField extends StatelessWidget {
     return TextFormField(
       decoration: InputDecoration(hintText: hintText),
       controller: controller,
+      
+      // The validator is used to validate the input field
+      // If the validator is not provided, a default one is used
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter something here';
         }
 
+        if (extraValidator != null) {
+          return extraValidator!(value);
+        }
+        
         return null;
       },
       obscureText: obscureText,

@@ -9,11 +9,6 @@ class UserSignup implements UseCase<String, UserSignUpParams> {
 
   @override
   Future<Either<Failure, String>> call(UserSignUpParams params) async {
-    // check if password and confirm password match
-    if (params.password != params.confirmPassword) {
-      return Left(Failure("Passwords do not match"));
-    }
-
     return await authRepository.signUpWithEmailAndPassword(
       name: params.name,
       email: params.email,
