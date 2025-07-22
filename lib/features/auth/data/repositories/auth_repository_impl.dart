@@ -1,13 +1,13 @@
 import 'package:flutter_app/core/error/exceptions.dart';
 import 'package:flutter_app/core/error/failures.dart';
-import 'package:flutter_app/features/auth/data/datasources/supabase_data_source.dart';
+import 'package:flutter_app/features/auth/data/datasources/auth_data_source.dart';
 import 'package:flutter_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final SupabaseDataSource supabaseDataSource;
+  final AuthDataSource authDataSource;
 
-  const AuthRepositoryImpl(this.supabaseDataSource);
+  const AuthRepositoryImpl(this.authDataSource);
 
   @override
   Future<Either<Failure, String>> signInWithEmailAndPassword({
@@ -25,7 +25,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String confirmPassword,
   }) async {
     try {
-      final userId = await supabaseDataSource.signUpWithEmailAndPassword(
+      final userId = await authDataSource.signUpWithEmailAndPassword(
         name: name,
         email: email,
         password: password,

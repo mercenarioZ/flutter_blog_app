@@ -1,7 +1,7 @@
 import 'package:flutter_app/core/error/exceptions.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-abstract interface class SupabaseDataSource {
+abstract interface class AuthDataSource {
   Future<String> signUpWithEmailAndPassword({
     required String name,
     required String email,
@@ -15,9 +15,9 @@ abstract interface class SupabaseDataSource {
   });
 }
 
-class SupabaseDataSourceImpl implements SupabaseDataSource {
+class AuthDataSourceImpl implements AuthDataSource {
   final SupabaseClient supabaseClient;
-  SupabaseDataSourceImpl(this.supabaseClient);
+  AuthDataSourceImpl(this.supabaseClient);
 
   // Implementation of the methods using Supabase client
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/secrets/secrets.dart';
 import 'package:flutter_app/core/theme/theme.dart';
-import 'package:flutter_app/features/auth/data/datasources/supabase_data_source.dart';
+import 'package:flutter_app/features/auth/data/datasources/auth_data_source.dart';
 import 'package:flutter_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:flutter_app/features/auth/domain/usecases/user_signup.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -22,7 +22,7 @@ void main() async {
         BlocProvider(
           create: (_) => AuthBloc(
             userSignup: UserSignup(
-              AuthRepositoryImpl(SupabaseDataSourceImpl(supabase.client)),
+              AuthRepositoryImpl(AuthDataSourceImpl(supabase.client)),
             ),
           ),
         ),
