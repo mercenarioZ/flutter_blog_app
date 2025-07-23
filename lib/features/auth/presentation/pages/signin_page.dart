@@ -3,36 +3,32 @@ import 'package:flutter_app/core/common/widgets/loader.dart';
 import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/snackbar.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:flutter_app/features/auth/presentation/pages/signin_page.dart';
+import 'package:flutter_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:flutter_app/features/auth/presentation/widgets/auth_field.dart';
 import 'package:flutter_app/features/auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SignUpPage extends StatefulWidget {
-  static route() => MaterialPageRoute(builder: (context) => const SignUpPage());
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  static route() => MaterialPageRoute(builder: (context) => const LoginPage());
+  const LoginPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   // controller for email input, this can be used to retrieve the email input value
-  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
 
   // controller for email input, this can be used to retrieve the email input value
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   // dispose the controllers when the widget is removed from the widget tree -> avoid memory leaks
   @override
   void dispose() {
-    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -40,7 +36,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 0),
+        padding: const EdgeInsets.all(15),
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthFailure) {
@@ -53,30 +49,20 @@ class _SignUpPageState extends State<SignUpPage> {
             }
 
             return Form(
-              key: _formKey,
+              key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Sign up", style: TextStyle(fontSize: 48)),
+                  const Text("Log in", style: TextStyle(fontSize: 48)),
                   const Text(
-                    "Create a new account here",
+                    "Welcome back, please log in",
                     style: TextStyle(fontSize: 20),
                   ),
 
                   const SizedBox(height: 30),
 
                   // Form fields can be added here
-                  AuthField(hintText: "Name", controller: nameController),
-                  const SizedBox(height: 15),
-
-                  AuthField(
-                    hintText: "Email",
-                    controller: emailController,
-                    extraValidator: (value) {
-                      if (!value!.contains('@')) return 'Invalid email format';
-                      return null;
-                    },
-                  ),
+                  AuthField(hintText: "Email", controller: emailController),
                   const SizedBox(height: 15),
 
                   AuthField(
@@ -84,26 +70,18 @@ class _SignUpPageState extends State<SignUpPage> {
                     controller: passwordController,
                     obscureText: true,
                   ),
-                  const SizedBox(height: 15),
-
-                  AuthField(
-                    hintText: "Confirm your password",
-                    controller: confirmPasswordController,
-                    obscureText: true,
-                  ),
                   const SizedBox(height: 30),
 
+                  // Gradient Login button
                   AuthGradientButton(
-                    buttonText: "Sign Up",
+                    buttonText: "Sign in",
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      // validate the form
+                      if (formKey.currentState!.validate()) {
                         context.read<AuthBloc>().add(
-                          AuthSignupEvent(
-                            name: nameController.text.trim(),
+                          AuthSigninEvent(
                             email: emailController.text.trim(),
                             password: passwordController.text.trim(),
-                            confirmPassword: confirmPasswordController.text
-                                .trim(),
                           ),
                         );
                       }
@@ -115,16 +93,17 @@ class _SignUpPageState extends State<SignUpPage> {
 
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, LoginPage.route());
+                      // navigate to sign up
+                      Navigator.push(context, SignUpPage.route());
                     },
                     child: RichText(
                       text: TextSpan(
-                        text: "Already have an account? ",
+                        text: 'Don\'t have an account? ',
                         style: Theme.of(context).textTheme.titleMedium,
 
                         children: [
                           TextSpan(
-                            text: 'Sign in',
+                            text: 'Sign up',
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   color: AppPallete.gradient3,

@@ -49,11 +49,20 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<UserModel> signInWithEmailAndPassword({
     required String email,
     required String password,
-  }) {
+  }) async {
     // Logic to sign in with Supabase
-    // Todo: Implement this method
-    throw UnimplementedError(
-      'signInWithEmailAndPassword is not implemented yet',
-    );
+    try {
+      final response = await supabaseClient.auth.signInWithPassword(
+        password: password,
+        email: email,
+      );
+
+      if (response.user == null) {
+        throw ServerException('Error: User is null, not signed in correctly!');
+      }
+      return UserModel.fromJson(response.user!.toJson());
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 }

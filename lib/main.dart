@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/theme/theme.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:flutter_app/features/auth/presentation/pages/login_page.dart';
+import 'package:flutter_app/features/auth/presentation/pages/signin_page.dart';
 import 'package:flutter_app/init_dependencies.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

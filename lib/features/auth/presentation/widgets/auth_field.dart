@@ -19,18 +19,18 @@ class AuthField extends StatelessWidget {
     return TextFormField(
       decoration: InputDecoration(hintText: hintText),
       controller: controller,
-      
+
       // The validator is used to validate the input field
       // If the validator is not provided, a default one is used
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter something here';
+          return 'It\'s a bit empty here, please fill it in';
         }
 
         if (extraValidator != null) {
           return extraValidator!(value);
         }
-        
+
         return null;
       },
       obscureText: obscureText,

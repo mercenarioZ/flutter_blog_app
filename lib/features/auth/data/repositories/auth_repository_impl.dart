@@ -4,6 +4,7 @@ import 'package:flutter_app/features/auth/data/datasources/auth_data_source.dart
 import 'package:flutter_app/features/auth/domain/entities/user.dart';
 import 'package:flutter_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as sbAuth;
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthDataSource authDataSource;
@@ -14,8 +15,13 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, User>> signInWithEmailAndPassword({
     required String email,
     required String password,
-  }) {
-    throw UnimplementedError();
+  }) async {
+    return _getUser(
+      () async => await authDataSource.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      ),
+    );
   }
 
   @override
@@ -25,15 +31,23 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String confirmPassword,
   }) async {
-    try {
-      final user = await authDataSource.signUpWithEmailAndPassword(
+    return _getUser(
+      () async => await authDataSource.signUpWithEmailAndPassword(
         name: name,
         email: email,
         password: password,
         confirmPassword: confirmPassword,
-      );
+      ),
+    );
+  }
+
+  Future<Either<Failure, User>> _getUser(Future<User> Function() fn) async {
+    try {
+      final user = await fn();
 
       return right(user);
+    } on sbAuth.AuthException catch (e) {
+      return left(Failure(e.message));
     } on ServerException catch (e) {
       return left(Failure(e.message));
     }
