@@ -69,14 +69,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   AuthField(hintText: "Name", controller: nameController),
                   const SizedBox(height: 15),
 
-                  AuthField(
-                    hintText: "Email",
-                    controller: emailController,
-                    extraValidator: (value) {
-                      if (!value!.contains('@')) return 'Invalid email format';
-                      return null;
-                    },
-                  ),
+                  AuthField(hintText: "Email", controller: emailController),
                   const SizedBox(height: 15),
 
                   AuthField(
