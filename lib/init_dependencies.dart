@@ -34,7 +34,6 @@ void _initAuth() {
   );
 
   serviceLocator.registerFactory(() => UserSignup(serviceLocator()));
-
   serviceLocator.registerFactory(() => UserSignin(serviceLocator()));
 
   serviceLocator.registerFactory(
