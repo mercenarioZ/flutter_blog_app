@@ -3,6 +3,8 @@ import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/snackbar.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_app/features/auth/presentation/pages/signup_page.dart';
+import 'package:flutter_app/features/auth/presentation/widgets/auth_input_field.dart';
+import 'package:flutter_app/features/auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
@@ -58,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
+              // Main content
               SafeArea(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
@@ -98,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 30),
 
                       // Welcome text
                       const Text(
@@ -138,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             children: [
                               // Email field
-                              _buildInputField(
+                              AuthInputField(
                                 controller: emailController,
                                 hintText: "Email Address",
                                 icon: Icons.email_outlined,
@@ -148,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(height: 20),
 
                               // Password field
-                              _buildInputField(
+                              AuthInputField(
                                 controller: passwordController,
                                 hintText: "Password",
                                 icon: Icons.lock_outline,
@@ -158,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(height: 30),
 
                               // Sign in button
-                              _buildGradientButton(
+                              AuthGradientButton(
                                 text: "Sign In",
                                 isLoading: state is AuthLoading,
                                 onPressed: state is AuthLoading
@@ -218,122 +221,6 @@ class _LoginPageState extends State<LoginPage> {
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    bool obscureText = false,
-    TextInputType? keyboardType,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      style: const TextStyle(color: AppPallete.whiteColor),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(
-          color: AppPallete.greyColor.withValues(alpha: 0.7),
-        ),
-        prefixIcon: Icon(icon, color: AppPallete.gradient3),
-        filled: true,
-        fillColor: AppPallete.backgroundColor.withValues(alpha: 0.5),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppPallete.borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppPallete.borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppPallete.gradient3, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppPallete.errorColor),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'This field is required';
-        }
-        if (hintText.toLowerCase().contains('email')) {
-          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-            return 'Please enter a valid email';
-          }
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildGradientButton({
-    required String text,
-    required VoidCallback? onPressed,
-    bool isLoading = false,
-  }) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: onPressed == null
-              ? [AppPallete.greyColor, AppPallete.greyColor]
-              : [
-                  AppPallete.gradient1,
-                  AppPallete.gradient2,
-                  AppPallete.gradient3,
-                ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: onPressed != null
-            ? [
-                BoxShadow(
-                  color: AppPallete.gradient1.withValues(alpha: 0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
-                ),
-              ]
-            : null,
-      ),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: isLoading
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            : Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
       ),
     );
   }

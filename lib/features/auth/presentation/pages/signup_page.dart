@@ -3,6 +3,8 @@ import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/snackbar.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_app/features/auth/presentation/pages/signin_page.dart';
+import 'package:flutter_app/features/auth/presentation/widgets/auth_input_field.dart';
+import 'package:flutter_app/features/auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -144,7 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: Column(
                             children: [
                               // Name field
-                              _buildInputField(
+                              AuthInputField(
                                 controller: nameController,
                                 hintText: "Full Name",
                                 icon: Icons.person_outline,
@@ -153,7 +155,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               const SizedBox(height: 20),
 
                               // Email field
-                              _buildInputField(
+                              AuthInputField(
                                 controller: emailController,
                                 hintText: "Email Address",
                                 icon: Icons.email_outlined,
@@ -163,7 +165,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               const SizedBox(height: 20),
 
                               // Password field
-                              _buildInputField(
+                              AuthInputField(
                                 controller: passwordController,
                                 hintText: "Password",
                                 icon: Icons.lock_outline,
@@ -173,7 +175,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               const SizedBox(height: 20),
 
                               // Confirm Password field
-                              _buildInputField(
+                              AuthInputField(
                                 controller: confirmPasswordController,
                                 hintText: "Confirm Password",
                                 icon: Icons.lock_outline,
@@ -192,7 +194,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               const SizedBox(height: 30),
 
                               // Sign up button
-                              _buildGradientButton(
+                              AuthGradientButton(
                                 text: "Create Account",
                                 isLoading: state is AuthLoading,
                                 onPressed: state is AuthLoading
@@ -255,138 +257,6 @@ class _SignUpPageState extends State<SignUpPage> {
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    bool obscureText = false,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      style: const TextStyle(color: AppPallete.whiteColor),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(
-          color: AppPallete.greyColor.withValues(alpha: 0.7),
-        ),
-        prefixIcon: Icon(icon, color: AppPallete.gradient2),
-        filled: true,
-        fillColor: AppPallete.backgroundColor.withValues(alpha: 0.5),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppPallete.borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppPallete.borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppPallete.gradient2, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppPallete.errorColor),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-      ),
-      validator:
-          validator ??
-          (value) {
-            if (value == null || value.isEmpty) {
-              return 'This field is required';
-            }
-            if (hintText.toLowerCase().contains('email')) {
-              if (!RegExp(
-                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-              ).hasMatch(value)) {
-                return 'Please enter a valid email';
-              }
-            }
-            if (hintText.toLowerCase().contains('password') &&
-                !hintText.toLowerCase().contains('confirm')) {
-              if (value.length < 6) {
-                return 'Password must be at least 6 characters';
-              }
-            }
-            if (hintText.toLowerCase().contains('name')) {
-              if (value.length < 2) {
-                return 'Name must be at least 2 characters';
-              }
-            }
-            return null;
-          },
-    );
-  }
-
-  Widget _buildGradientButton({
-    required String text,
-    required VoidCallback? onPressed,
-    bool isLoading = false,
-  }) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: onPressed == null
-              ? [AppPallete.greyColor, AppPallete.greyColor]
-              : [
-                  AppPallete.gradient1,
-                  AppPallete.gradient2,
-                  AppPallete.gradient3,
-                ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: onPressed != null
-            ? [
-                BoxShadow(
-                  color: AppPallete.gradient2.withValues(alpha: 0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
-                ),
-              ]
-            : null,
-      ),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: isLoading
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            : Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
       ),
     );
   }
