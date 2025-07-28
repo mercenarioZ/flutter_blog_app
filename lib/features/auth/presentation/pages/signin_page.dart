@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/core/common/widgets/loader.dart';
 import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/snackbar.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_app/features/auth/presentation/pages/signup_page.dart';
-import 'package:flutter_app/features/auth/presentation/widgets/auth_field.dart';
-import 'package:flutter_app/features/auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
@@ -35,90 +32,308 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is AuthFailure) {
-              snackBar(context, state.message);
-            }
-          },
-          builder: (context, state) {
-            if (state is AuthLoading) {
-              return const Loader();
-            }
-
-            return Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Log in", style: TextStyle(fontSize: 48)),
-                  const Text(
-                    "Welcome back, please log in",
-                    style: TextStyle(fontSize: 20),
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthFailure) {
+            snackBar(context, state.message);
+          }
+        },
+        builder: (context, state) {
+          return Stack(
+            children: [
+              // Background gradient
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [0.0, 0.3, 0.6, 1],
+                    colors: [
+                      AppPallete.backgroundColor,
+                      Color.fromRGBO(45, 35, 45, 1),
+                      Color.fromRGBO(40, 35, 50, 1),
+                      Color.fromRGBO(30, 30, 40, 1),
+                    ],
                   ),
+                ),
+              ),
 
-                  const SizedBox(height: 30),
-
-                  // Form fields can be added here
-                  AuthField(hintText: "Email", controller: emailController),
-                  const SizedBox(height: 15),
-
-                  AuthField(
-                    hintText: "Password",
-                    controller: passwordController,
-                    obscureText: true,
+              SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 20,
                   ),
-                  const SizedBox(height: 30),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 60),
 
-                  // Gradient Login button
-                  AuthGradientButton(
-                    buttonText: "Sign in",
-                    onPressed: () {
-                      // validate the form
-                      if (formKey.currentState!.validate()) {
-                        context.read<AuthBloc>().add(
-                          AuthSigninEvent(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
+                      // App Logo/Icon
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const LinearGradient(
+                            colors: [
+                              AppPallete.gradient1,
+                              AppPallete.gradient2,
+                              AppPallete.gradient3,
+                            ],
                           ),
-                        );
-                      }
-                    },
-                  ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppPallete.gradient1.withValues(
+                                alpha: 0.3,
+                              ),
+                              blurRadius: 30,
+                              offset: const Offset(5, 10),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.article_outlined,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      ),
 
-                  // Sign in link
-                  const SizedBox(height: 20),
+                      const SizedBox(height: 40),
 
-                  GestureDetector(
-                    onTap: () {
-                      // navigate to sign up
-                      Navigator.push(context, SignUpPage.route());
-                    },
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'Don\'t have an account? ',
-                        style: Theme.of(context).textTheme.titleMedium,
+                      // Welcome text
+                      const Text(
+                        "Welcome Back!",
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppPallete.whiteColor,
+                        ),
+                      ),
 
-                        children: [
-                          TextSpan(
-                            text: 'Sign up',
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
+                      const SizedBox(height: 8),
+
+                      Text(
+                        "Sign in to continue your blogging journey",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppPallete.greyColor.withValues(alpha: 0.8),
+                        ),
+                      ),
+
+                      const SizedBox(height: 50),
+
+                      // Form Card
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: AppPallete.borderColor.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppPallete.borderColor,
+                            width: 1,
+                          ),
+                        ),
+                        child: Form(
+                          key: formKey,
+                          child: Column(
+                            children: [
+                              // Email field
+                              _buildInputField(
+                                controller: emailController,
+                                hintText: "Email Address",
+                                icon: Icons.email_outlined,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // Password field
+                              _buildInputField(
+                                controller: passwordController,
+                                hintText: "Password",
+                                icon: Icons.lock_outline,
+                                obscureText: true,
+                              ),
+
+                              const SizedBox(height: 30),
+
+                              // Sign in button
+                              _buildGradientButton(
+                                text: "Sign In",
+                                isLoading: state is AuthLoading,
+                                onPressed: state is AuthLoading
+                                    ? null
+                                    : () {
+                                        if (formKey.currentState!.validate()) {
+                                          context.read<AuthBloc>().add(
+                                            AuthSigninEvent(
+                                              email: emailController.text
+                                                  .trim(),
+                                              password: passwordController.text
+                                                  .trim(),
+                                            ),
+                                          );
+                                        }
+                                      },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // Sign up link
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            SignUpPage.route(),
+                          );
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            text: "Don't have an account? ",
+                            style: const TextStyle(
+                              color: AppPallete.greyColor,
+                              fontSize: 16,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'Sign Up',
+                                style: TextStyle(
                                   color: AppPallete.gradient3,
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            );
-          },
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    bool obscureText = false,
+    TextInputType? keyboardType,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      style: const TextStyle(color: AppPallete.whiteColor),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: TextStyle(
+          color: AppPallete.greyColor.withValues(alpha: 0.7),
         ),
+        prefixIcon: Icon(icon, color: AppPallete.gradient3),
+        filled: true,
+        fillColor: AppPallete.backgroundColor.withValues(alpha: 0.5),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppPallete.borderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppPallete.borderColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppPallete.gradient3, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppPallete.errorColor),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field is required';
+        }
+        if (hintText.toLowerCase().contains('email')) {
+          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+            return 'Please enter a valid email';
+          }
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildGradientButton({
+    required String text,
+    required VoidCallback? onPressed,
+    bool isLoading = false,
+  }) {
+    return Container(
+      width: double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: onPressed == null
+              ? [AppPallete.greyColor, AppPallete.greyColor]
+              : [
+                  AppPallete.gradient1,
+                  AppPallete.gradient2,
+                  AppPallete.gradient3,
+                ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: onPressed != null
+            ? [
+                BoxShadow(
+                  color: AppPallete.gradient1.withValues(alpha: 0.3),
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
+                ),
+              ]
+            : null,
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: isLoading
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
       ),
     );
   }
