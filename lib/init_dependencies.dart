@@ -2,6 +2,7 @@ import 'package:flutter_app/core/secrets/secrets.dart';
 import 'package:flutter_app/features/auth/data/datasources/auth_data_source.dart';
 import 'package:flutter_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:flutter_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:flutter_app/features/auth/domain/usecases/current_user.dart';
 import 'package:flutter_app/features/auth/domain/usecases/user_signin.dart';
 import 'package:flutter_app/features/auth/domain/usecases/user_signup.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -26,17 +27,25 @@ Future<void> initDependencies() async {
 }
 
 void _initAuth() {
-  serviceLocator.registerFactory<AuthDataSource>(
-    () => AuthDataSourceImpl(serviceLocator()),
-  );
-  serviceLocator.registerFactory<AuthRepository>(
-    () => AuthRepositoryImpl(serviceLocator()),
-  );
-
-  serviceLocator.registerFactory(() => UserSignup(serviceLocator()));
-  serviceLocator.registerFactory(() => UserSignin(serviceLocator()));
-
-  serviceLocator.registerFactory(
-    () => AuthBloc(userSignup: serviceLocator(), userSignin: serviceLocator()),
-  );
+  serviceLocator
+    // data source
+    ..registerFactory<AuthDataSource>(
+      () => AuthDataSourceImpl(serviceLocator()),
+    )
+    // repository
+    ..registerFactory<AuthRepository>(
+      () => AuthRepositoryImpl(serviceLocator()),
+    )
+    // use cases
+    ..registerFactory(() => UserSignup(serviceLocator()))
+    ..registerFactory(() => UserSignin(serviceLocator()))
+    ..registerFactory(() => CurrentUser(serviceLocator()))
+    // bloc
+    ..registerLazySingleton(
+      () => AuthBloc(
+        userSignup: serviceLocator(),
+        userSignin: serviceLocator(),
+        currentUser: serviceLocator(),
+      ),
+    );
 }
