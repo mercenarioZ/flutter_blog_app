@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/features/auth/domain/entities/user.dart';
+import 'package:flutter_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:flutter_app/core/common/entities/user.dart';
 import 'package:flutter_app/features/auth/domain/usecases/current_user.dart';
 import 'package:flutter_app/features/auth/domain/usecases/user_signin.dart';
 import 'package:flutter_app/features/auth/domain/usecases/user_signup.dart';
@@ -12,15 +13,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignup _userSignup;
   final UserSignin _userSignin;
   final CurrentUser _currentUser;
+  final AppUserCubit _appUserCubit;
 
   AuthBloc({
     required UserSignup userSignup,
     required UserSignin userSignin,
     required CurrentUser currentUser,
+    required AppUserCubit appUserCubit,
   }) : _userSignup = userSignup,
        _userSignin = userSignin,
        _currentUser = currentUser,
+       _appUserCubit = appUserCubit,
        super(AuthInitial()) {
+    on<AuthEvent>((_, emit) => emit(AuthLoading()));
     on<AuthSignupEvent>(_onAuthSignupEvent);
     on<AuthSigninEvent>(_onAuthSigninEvent);
     on<AuthCurrentUserEvent>(_onAuthCurrentUserEvent);
@@ -30,32 +35,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCurrentUserEvent event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
-
     final response = await _currentUser(Params()); // actually no params needed
 
-    response.fold((onLeft) => emit(AuthFailure(onLeft.message)), (user) {
-      // ignore: avoid_print
-      print('Current user: ${user.id}');
-      // ignore: avoid_print
-      print('Current user email: ${user.email}');
-      emit(AuthSuccess(user));
-    });
+    response.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (user) => _emitAuthSuccess(user, emit),
+    );
   }
 
   void _onAuthSigninEvent(
     AuthSigninEvent event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
-
     final response = await _userSignin(
       UserSigninParams(email: event.email, password: event.password),
     );
 
     response.fold(
       (onLeft) => emit(AuthFailure(onLeft.message)),
-      (user) => emit(AuthSuccess(user)),
+      (user) => _emitAuthSuccess(user, emit),
     );
   }
 
@@ -63,7 +61,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignupEvent event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
     final response = await _userSignup(
       UserSignupParams(
         name: event.name,
@@ -75,7 +72,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     response.fold(
       (onLeft) => emit(AuthFailure(onLeft.message)),
-      (user) => emit(AuthSuccess(user)),
+      (user) => _emitAuthSuccess(user, emit),
     );
+  }
+
+  // Helper method to handle successful authentication
+  void _emitAuthSuccess(User user, Emitter<AuthState> emit) {
+    emit(AuthSuccess(user));
+    _appUserCubit.updateUser(user);
   }
 }

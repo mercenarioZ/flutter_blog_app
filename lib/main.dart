@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter_app/core/theme/theme.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_app/features/auth/presentation/pages/signin_page.dart';
@@ -11,7 +12,10 @@ void main() async {
 
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => serviceLocator<AuthBloc>())],
+      providers: [
+        BlocProvider(create: (_) => serviceLocator<AppUserCubit>()),
+        BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -39,7 +43,23 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Blog',
       theme: AppTheme.darkThemeMode,
-      home: const LoginPage(),
+      home: BlocSelector<AppUserCubit, AppUserState, bool>(
+        selector: (state) {
+          return state is AppUserLoggedIn;
+        },
+        builder: (context, state) {
+          // If user is logged in, navigate to home page, otherwise show login page
+          if (state) {
+            // state = true means user is logged in
+            return const Scaffold(
+              body: Center(
+                child: Text('Welcome to the app, you are logged in'),
+              ),
+            );
+          }
+          return const LoginPage();
+        },
+      ),
     );
   }
 }

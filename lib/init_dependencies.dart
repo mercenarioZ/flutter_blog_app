@@ -1,3 +1,4 @@
+import 'package:flutter_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter_app/core/secrets/secrets.dart';
 import 'package:flutter_app/features/auth/data/datasources/auth_data_source.dart';
 import 'package:flutter_app/features/auth/data/repositories/auth_repository_impl.dart';
@@ -24,6 +25,9 @@ Future<void> initDependencies() async {
 
   // Register Supabase client as a lazy singleton. This means it will be created only when it's first requested.
   serviceLocator.registerLazySingleton(() => supabase.client);
+
+  // core dependencies
+  serviceLocator.registerLazySingleton(() => AppUserCubit());
 }
 
 void _initAuth() {
@@ -46,6 +50,7 @@ void _initAuth() {
         userSignup: serviceLocator(),
         userSignin: serviceLocator(),
         currentUser: serviceLocator(),
+        appUserCubit: serviceLocator(),
       ),
     );
 }
