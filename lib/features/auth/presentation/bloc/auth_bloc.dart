@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter_app/core/common/entities/user.dart';
+import 'package:flutter_app/core/usecases/usecases.dart';
 import 'package:flutter_app/features/auth/domain/usecases/current_user.dart';
 import 'package:flutter_app/features/auth/domain/usecases/user_signin.dart';
 import 'package:flutter_app/features/auth/domain/usecases/user_signup.dart';
@@ -25,7 +26,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
        _currentUser = currentUser,
        _appUserCubit = appUserCubit,
        super(AuthInitial()) {
-    on<AuthEvent>((_, emit) => emit(AuthLoading()));
     on<AuthSignupEvent>(_onAuthSignupEvent);
     on<AuthSigninEvent>(_onAuthSigninEvent);
     on<AuthCurrentUserEvent>(_onAuthCurrentUserEvent);
@@ -35,7 +35,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCurrentUserEvent event,
     Emitter<AuthState> emit,
   ) async {
-    final response = await _currentUser(Params()); // actually no params needed
+    emit(AuthLoading());
+
+    final response = await _currentUser(
+      const NoParams(),
+    ); // actually no params needed
 
     response.fold(
       (failure) => emit(AuthFailure(failure.message)),
@@ -47,6 +51,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSigninEvent event,
     Emitter<AuthState> emit,
   ) async {
+    emit(AuthLoading());
+
     final response = await _userSignin(
       UserSigninParams(email: event.email, password: event.password),
     );
@@ -61,6 +67,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignupEvent event,
     Emitter<AuthState> emit,
   ) async {
+    emit(AuthLoading());
+
     final response = await _userSignup(
       UserSignupParams(
         name: event.name,
