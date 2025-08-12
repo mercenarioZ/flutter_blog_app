@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/snackbar.dart';
 
 class AddBlogPage extends StatefulWidget {
@@ -55,31 +56,42 @@ class _AddBlogPageState extends State<AddBlogPage> {
               ),
             ),
 
+            const SizedBox(height: 20),
+
+            // tag selection
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children:
+                    [
+                          'Technology',
+                          'Health',
+                          'Lifestyle',
+                          'Education',
+                          'Programming',
+                          'Productivity',
+                        ]
+                        .map(
+                          (e) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0,
+                            ),
+                            child: Chip(
+                              label: Text(e),
+                              side: const BorderSide(
+                                color: AppPallete.borderColor,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+            
             // title input
-            const SizedBox(height: 20),
 
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // main content input
-            TextField(
-              maxLines: 9,
-              decoration: InputDecoration(
-                labelText: 'Main content',
-                hintText: 'Write your content over here...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
           ],
         ),
       ),
