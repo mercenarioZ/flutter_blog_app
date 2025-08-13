@@ -6,6 +6,7 @@ import 'package:flutter_app/features/blog/presentation/widgets/blog_editor.dart'
 class AddBlogPage extends StatefulWidget {
   static route() =>
       MaterialPageRoute(builder: (context) => const AddBlogPage());
+
   const AddBlogPage({super.key});
 
   @override
@@ -15,6 +16,8 @@ class AddBlogPage extends StatefulWidget {
 class _AddBlogPageState extends State<AddBlogPage> {
   final titleController = TextEditingController();
   final contentController = TextEditingController();
+
+  List<String> selectedTags = [];
 
   // dispose controllers to avoid memory leaks
   @override
@@ -41,7 +44,7 @@ class _AddBlogPageState extends State<AddBlogPage> {
               // image picker
               GestureDetector(
                 onTap: () {
-                  // Implement image picker logic here
+                  // TODO: Implement image picker logic
                   snackBar(context, 'Image picker tapped');
                 },
                 child: Container(
@@ -49,7 +52,10 @@ class _AddBlogPageState extends State<AddBlogPage> {
                   height: 180,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
-                    border: Border.all(color: Colors.grey.shade400, width: 1.5),
+                    border: Border.all(
+                      color: Colors.grey.shade400.withValues(alpha: 0.75),
+                      width: 1.5,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Center(
@@ -89,10 +95,26 @@ class _AddBlogPageState extends State<AddBlogPage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 4.0,
                               ),
-                              child: Chip(
-                                label: Text(e),
-                                side: const BorderSide(
-                                  color: AppPallete.borderColor,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (selectedTags.contains(e)) {
+                                      selectedTags.remove(e);
+                                    } else {
+                                      selectedTags.add(e);
+                                    }
+                                  });
+                                },
+                                child: Chip(
+                                  label: Text(e),
+                                  side: const BorderSide(
+                                    color: AppPallete.borderColor,
+                                  ),
+                                  color: selectedTags.contains(e)
+                                      ? const WidgetStatePropertyAll<Color>(
+                                          AppPallete.gradient1,
+                                        )
+                                      : null,
                                 ),
                               ),
                             ),
