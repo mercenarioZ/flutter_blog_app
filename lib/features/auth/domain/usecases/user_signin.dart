@@ -5,12 +5,12 @@ import 'package:flutter_app/features/auth/domain/repositories/auth_repository.da
 import 'package:fpdart/fpdart.dart';
 
 class UserSignin implements UseCase<User, UserSigninParams> {
-  final AuthRepository authRepository;
-  const UserSignin(this.authRepository);
+  final AuthRepository repo;
+  const UserSignin(this.repo);
 
   @override
   Future<Either<Failure, User>> call(UserSigninParams params) async {
-    return await authRepository.signInWithEmailAndPassword(
+    return await repo.signInWithEmailAndPassword(
       email: params.email,
       password: params.password,
     );

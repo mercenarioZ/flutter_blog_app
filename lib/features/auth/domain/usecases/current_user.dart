@@ -5,11 +5,11 @@ import 'package:flutter_app/features/auth/domain/repositories/auth_repository.da
 import 'package:fpdart/fpdart.dart';
 
 class CurrentUser implements UseCase<User, NoParams> {
-  final AuthRepository authRepository;
-  CurrentUser(this.authRepository);
+  final AuthRepository repo;
+  CurrentUser(this.repo);
 
   @override
   Future<Either<Failure, User>> call(NoParams params) async {
-    return await authRepository.currentUser();
+    return await repo.currentUser();
   }
 }
