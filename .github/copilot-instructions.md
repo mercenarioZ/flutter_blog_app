@@ -143,3 +143,5 @@ Navigator.push(context, PageName.route());
 5. **Asset Management**: Images handled via image_picker package
 
 When implementing new features, follow the established Clean Architecture pattern and maintain consistency with the existing state management flow.
+
+Each step you generate, I want you to generate the code slowly, do not go too far each time.
