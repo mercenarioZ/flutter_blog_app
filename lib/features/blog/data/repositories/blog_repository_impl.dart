@@ -30,7 +30,7 @@ class BlogRepositoryImpl implements BlogRepository {
         blogId: blogId,
       );
 
-      BlogModel blogModel = BlogModel(
+      BlogModel blog = BlogModel(
         id: blogId,
         title: title,
         content: content,
@@ -40,9 +40,12 @@ class BlogRepositoryImpl implements BlogRepository {
         updatedAt: DateTime.now(),
       );
 
-      return Right(blogModel);
+      final uploadedBlog = await blogRemoteDataSource.uploadBlog(blog);
+
+      return right(uploadedBlog);
+      // can return the uploaded blog (type Blog) directly instead of BlogModel, because BlogModel extends Blog!!
     } on ServerException catch (e) {
-      return Left(Failure(e.message));
+      return left(Failure(e.message));
     }
   }
 
