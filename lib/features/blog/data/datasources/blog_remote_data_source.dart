@@ -8,7 +8,7 @@ abstract interface class BlogRemoteDataSource {
   Future<BlogModel> uploadBlog(BlogModel blog);
   Future<String> uploadBlogImage({
     required File image,
-    required BlogModel blog,
+    required String blogId,
   });
 }
 
@@ -33,12 +33,12 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   @override
   Future<String> uploadBlogImage({
     required File image,
-    required BlogModel blog,
+    required String blogId,
   }) async {
     try {
-      await supabase.storage.from('blog_images').upload(blog.id, image);
+      await supabase.storage.from('blog_images').upload(blogId, image);
 
-      return supabase.storage.from('blog_images').getPublicUrl(blog.id);
+      return supabase.storage.from('blog_images').getPublicUrl(blogId);
     } catch (e) {
       throw ServerException(e.toString());
     }
