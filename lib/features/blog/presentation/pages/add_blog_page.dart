@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/theme/app_pallete.dart';
+import 'package:flutter_app/core/utils/image_picker.dart';
 import 'package:flutter_app/core/utils/snackbar.dart';
 import 'package:flutter_app/features/blog/presentation/widgets/blog_editor.dart';
 
@@ -18,6 +21,17 @@ class _AddBlogPageState extends State<AddBlogPage> {
   final contentController = TextEditingController();
 
   List<String> selectedTags = [];
+  File? _image;
+
+  void selectImage() async {
+    final selectedImage = await pickImage();
+
+    if (selectedImage != null) {
+      setState(() {
+        _image = selectedImage;
+      });
+    }
+  }
 
   // dispose controllers to avoid memory leaks
   @override
@@ -42,38 +56,48 @@ class _AddBlogPageState extends State<AddBlogPage> {
           child: Column(
             children: [
               // image picker
-              GestureDetector(
-                onTap: () {
-                  // TODO: Implement image picker logic
-                  snackBar(context, 'Image picker tapped');
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 180,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border.all(
-                      color: Colors.grey.shade400.withValues(alpha: 0.75),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Center(
-                    child: Opacity(
-                      opacity: 0.75,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.add_a_photo, size: 40),
-                          SizedBox(height: 10),
-                          Text('Tap to add image'),
-                        ],
+              _image == null
+                  ? GestureDetector(
+                      onTap: () {
+                        selectImage();
+                        snackBar(context, 'Image picker tapped');
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: 180,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(
+                            color: Colors.grey.shade400.withValues(alpha: 0.75),
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: Opacity(
+                            opacity: 0.75,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add_a_photo, size: 40),
+                                SizedBox(height: 10),
+                                Text('Tap to add image'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: SizedBox(
+                        height: 160,
+                        width: double.infinity,
+
+                        child: Image.file(_image!, fit: BoxFit.cover),
                       ),
                     ),
-                  ),
-                ),
-              ),
 
               const SizedBox(height: 20),
 
