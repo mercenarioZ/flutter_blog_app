@@ -18,6 +18,13 @@ class BlogEditor extends StatelessWidget {
 
       // Allows for multi-line input,
       maxLines: null,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return '$hintText cannot be empty';
+        }
+
+        return null; // No validation error
+      },
     );
   }
 }

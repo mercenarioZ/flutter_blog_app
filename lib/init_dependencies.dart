@@ -69,10 +69,10 @@ void _initBlog() {
     )
     // repository
     ..registerFactory<BlogRepository>(
-      () => BlogRepositoryImpl(blogRemoteDataSource: serviceLocator()),
+      () => BlogRepositoryImpl(serviceLocator()),
     )
     // use cases
-    ..registerFactory(() => UploadBlog(blogRepository: serviceLocator()))
+    ..registerFactory(() => UploadBlog(serviceLocator()))
     // bloc
     ..registerLazySingleton(() => BlogBloc(serviceLocator()));
 }
