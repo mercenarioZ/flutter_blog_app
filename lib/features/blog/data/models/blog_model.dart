@@ -9,6 +9,7 @@ class BlogModel extends Blog {
     required super.ownerId, // Changed from authorId to ownerId for clarity
     required super.updatedAt,
     required super.topics,
+    super.ownerName,
   });
 
   Map<String, dynamic> toJson() {
@@ -34,6 +35,9 @@ class BlogModel extends Blog {
           ? DateTime.now()
           : DateTime.parse(map['updated_at'] as String),
       topics: List<String>.from(map['topics'] as List<dynamic>),
+      ownerName: map['profiles'] != null
+          ? map['profiles']['name'] as String?
+          : null,
     );
   }
 }

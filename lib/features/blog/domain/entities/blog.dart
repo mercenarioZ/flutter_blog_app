@@ -6,6 +6,7 @@ class Blog {
   final String ownerId; // Changed from authorId to ownerId for clarity
   final DateTime updatedAt;
   final List<String> topics;
+  final String? ownerName;
 
   Blog({
     required this.id,
@@ -15,5 +16,6 @@ class Blog {
     required this.ownerId,
     required this.updatedAt,
     required this.topics,
+    this.ownerName,
   });
 }

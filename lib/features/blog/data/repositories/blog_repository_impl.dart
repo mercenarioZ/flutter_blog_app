@@ -50,8 +50,13 @@ class BlogRepositoryImpl implements BlogRepository {
   }
 
   @override
-  Future<String> uploadBlogImage({required File image, required Blog blog}) {
-    // TODO: implement uploadBlogImage
-    throw UnimplementedError();
+  Future<Either<Failure, List<Blog>>> getAllBlogs() async {
+    try {
+      final blogs = await blogRemoteDataSource.getAllBlogs();
+
+      return right(blogs);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
   }
 }

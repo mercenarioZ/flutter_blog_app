@@ -6,10 +6,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract interface class BlogRemoteDataSource {
   Future<BlogModel> uploadBlog(BlogModel blog);
-  Future<String> uploadBlogImage({
-    required File image,
-    required String blogId,
-  });
+  Future<String> uploadBlogImage({required File image, required String blogId});
+  Future<List<BlogModel>> getAllBlogs();
+  Future<BlogModel> getBlogById(String blogId); // implement this later
 }
 
 class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
@@ -42,5 +41,26 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
     } catch (e) {
       throw ServerException(e.toString());
     }
+  }
+
+  @override
+  Future<List<BlogModel>> getAllBlogs() async {
+    try {
+      final response = await supabase
+          .from('blogs')
+          .select('*, profiles (name)');
+
+      return (response as List)
+          .map((blog) => BlogModel.fromJson(blog))
+          .toList();
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<BlogModel> getBlogById(String blogId) {
+    // TODO: implement getBlogById
+    throw UnimplementedError();
   }
 }
