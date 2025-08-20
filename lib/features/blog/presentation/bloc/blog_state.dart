@@ -14,3 +14,9 @@ final class BlogFailure extends BlogState {
 
   BlogFailure(this.error);
 }
+
+final class BlogLoaded extends BlogState {
+  final List<Blog> blogs;
+
+  BlogLoaded(this.blogs);
+}
